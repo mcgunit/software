@@ -14,6 +14,7 @@ Servo esc;
 int escPin = 2;
 int throttleInput = A9;
 int onBoardLed = 13;
+int waterPump = 5;
 
 
 unsigned long throttleValue = 0;
@@ -22,7 +23,7 @@ int throttlePercentage = 0;
 unsigned long lastUpdateLCD = 0;
 unsigned long lcdUpdateTime = 150;    // Time of update LCD screen in ms. To fast and it will not show correctly
 
-int maxESC = 2100;
+int maxESC = 2200;
 
 
 
@@ -42,16 +43,22 @@ void setup() {
   // Init esc
   esc.attach(escPin);
   esc.writeMicroseconds(1100);
-  delay(500);
+  delay(1500);
+
+  // Waterpomp
+  pinMode(waterPump, OUTPUT);
+  //digitalWrite(waterPump, HIGH);
+
 }
 
 void loop() {
   led.sendHeartBeat();
 
   // Analog read is 10-bit resolution.
+  USB.print("Throttle input: ");
   USB.println(analogRead(throttleInput));
 
-  throttleValue = map(analogRead(throttleInput), 266, 800, 1100, maxESC);
+  throttleValue = map(analogRead(throttleInput), 266, 770, 1100, maxESC);
   if(throttleValue > maxESC) {
     throttleValue = maxESC;
   } else if(throttleValue < 1000) {
